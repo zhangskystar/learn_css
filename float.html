@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>浮动的影响及解决方法</title>
+		<style type="text/css">
+			img{ 
+				margin: 0; /*删除默认的上下外边距*/
+				width: 100px;
+				height: 100px;
+				float: left;/*添加浮动，目的让p盒子位于img盒子右侧*/
+			}
+			
+			/*描述影响：
+      1、元素之间，前一个元素浮动，后续元素未浮动，则后续元素的文字和图片会围绕浮动元素周围排列（不分层级）
+      2、子级元素浮动，父级元素不再具备高度
+      具体影响：
+			给img盒子添加浮动后，img盒子脱离文档流跑到了左上角，覆盖了后边上来的p盒子，
+			父元素section不再包围浮动元素，只包围非浮动的元素，收缩到只包含文本的高度。
+			*/
+			
+			/*解决方法：（具体情况具体应用）
+			   方法一：为父元素添加overflow:hidden,以强制它包围浮动元素（防止包含元素被超大内容撑大）
+			   缺点：当父级的子级元素内容有溢出时，会被隐藏
+			   
+			   方法二：同时浮动父元素，促使父元素包围其浮动子元素
+			  
+			   方法三：添加非浮动的清除元素，给父元素的最后添加一个非浮动的子元素，然后清除它。
+			   	方式1：添加div子元素，没有默认的样式，不会引入多余空间
+            缺点：添加了一个纯表现性的元素
+			           方式2：添加clearfix规则，动态添加元素伪类
+			   		写法：
+			  			.clearfix:after{   在元素内容后面插入一个伪元素
+        					content:".";
+        					display:block; 转换为块级元素
+        					height:0;   确保伪元素没有高度，可省略
+        					visibility:hidden;  确保伪元素在页面上不可见，可省略
+        					clear:both;  父元素中新增的子元素会清除左、右浮动元素（位于左、右浮动元素的下方）
+        					}
+			 */
+			
+			p{
+				margin: 0; /*删除默认的上下外边距*/
+			}
+			section{
+				border: 2px solid goldenrod;  /*为了显示盒子范围*/
+				margin-bottom: 10px;
+				/*overflow: hidden;   方法一*/
+				width:100%;   /*方法二  */ /*width:100%;让section与浏览器容器同宽*/
+				float: left;  /*浮动父元素*/
+			}
+			
+			/*.clear_me{
+				clear: left;  方法三>方式1
+			}
+			*/
+			
+			footer{
+				border: 2px solid orangered;  /*为了显示盒子范围*/
+				clear: left;/*方法二*/ /*应用clear，强制footer依然呆在section下方，
+				被清除的元素不会被提升到浮动元素的旁边*/
+			}
+			
+			/*.clearfix:after{   方法三>方式2>clearfix规则
+        					content:".";
+        					display:block;
+        					height:0;   确保伪元素没有高度，可省略
+        					visibility:hidden;   确保伪元素在页面上不可见，可省略
+        					clear:both;     section中新增的子元素会清除左、右浮动元素（位于左、右浮动元素的下方）
+        					}
+        	*/
+		</style>
+	</head>
+  
+	<body>
+		<section class="clearfix">
+			<img src="img/02.jpg">
+			<p>这是展示的是p盒子</p>
+			<!--<div class="clear_me"></div>--><!--纯表现性元素-->
+		</section>
+		<footer>这是展示的是footer盒子</footer>
+	</body>
+</html>
